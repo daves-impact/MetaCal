@@ -14,7 +14,6 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    // <NavigationContainer>
     <Stack.Navigator
       initialRouteName="Welcome1"
       screenOptions={{ headerShown: false }}
@@ -29,6 +28,5 @@ export default function App() {
       <Stack.Screen name="OTPScreen" component={OTPScreen} />
       <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} />
     </Stack.Navigator>
-    // </NavigationContainer>
   );
 }
