@@ -9,7 +9,7 @@ import {
   View,
 } from "react-native";
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
@@ -56,7 +56,7 @@ const SignUpScreen = () => {
         <Ionicons
           name={agreeTerms ? "checkbox" : "square-outline"}
           size={24}
-          color={agreeTerms ? "#8BC34A" : "#888"}
+          color={agreeTerms ? "#80CF6C" : "#888"}
         />
         <Text style={styles.checkboxLabel}>
           I agree to Nutrio <Text style={styles.link}>Terms & Conditions</Text>.
@@ -77,7 +77,10 @@ const SignUpScreen = () => {
         ))}
       </View>
 
-      <TouchableOpacity style={styles.primaryButton}>
+      <TouchableOpacity
+        style={styles.primaryButton}
+        onPress={() => navigation.navigate("Name")}
+      >
         <Text style={styles.primaryButtonText}>Sign up</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -114,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   checkboxLabel: { marginLeft: 8, fontSize: 13 },
-  link: { color: "#8BC34A", fontWeight: "600" },
+  link: { color: "#80CF6C", fontWeight: "600" },
   switchText: { fontSize: 13, color: "#666", marginBottom: 16 },
   altText: { textAlign: "center", color: "#aaa", marginBottom: 12 },
   socialRow: {
@@ -132,9 +135,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   primaryButton: {
-    backgroundColor: "#8BC34A",
+    backgroundColor: "#80CF6C",
     paddingVertical: 14,
-    borderRadius: 8,
+    borderRadius: 30,
     alignItems: "center",
   },
   primaryButtonText: { color: "#fff", fontWeight: "600", fontSize: 16 },

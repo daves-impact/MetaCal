@@ -31,6 +31,12 @@ const WelcomeScreen2 = ({ navigation }) => {
       {/* Buttons */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity
+          onPress={() => navigation.navigate("AuthOptions")}
+          style={styles.skipButton}
+        >
+          <Text style={styles.skipText}>Skip</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
           onPress={() => navigation.navigate("Welcome3")}
           style={styles.continueButton}
         >
@@ -88,7 +94,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 15,
     borderRadius: 30,
-    width: "80%",
+    width: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  skipButton: {
+    backgroundColor: "#E5E7EB",
+    paddingHorizontal: 24,
+    paddingVertical: 15,
+    borderRadius: 30,
+    width: "40%",
     justifyContent: "center",
     alignItems: "center",
   },

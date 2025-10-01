@@ -40,7 +40,10 @@ export default function ResetPasswordScreen({ navigation }) {
         onChangeText={setConfirmPassword}
       />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("PasswordChanged")}
+      >
         <Text style={styles.buttonText}>Save New Password</Text>
       </TouchableOpacity>
     </View>

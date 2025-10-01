@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   Dimensions,
   Image,
@@ -33,12 +34,12 @@ const WelcomeScreen1 = ({ navigation }) => {
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
-        {/* <TouchableOpacity
-          onPress={() => navigation.navigate("Welcome2")}
+        <TouchableOpacity
+          onPress={() => navigation.navigate("AuthOptions")}
           style={styles.skipButton}
         >
           <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => navigation.navigate("Welcome2")}
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginBottom: 12,
     color: "#1E1E1E",
+    fontFamily: "Poppins",
   },
   description: {
     fontSize: 15,
@@ -98,9 +100,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 15,
     borderRadius: 30,
-    width: "80%",
+    width: "50%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  skipButton: {
+    backgroundColor: "#E5E7EB",
+    paddingHorizontal: 24,
+    paddingVertical: 15,
+    width: "40%",
+    borderRadius: 30,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  skipText: {
+    color: "#1F2937",
+    fontWeight: "500",
   },
   continueText: {
     color: "#fff",

@@ -54,13 +54,16 @@ const LoginScreen = ({ navigation }) => {
       </View>
 
       <Text style={styles.switchText}>
-        Don’t have an account? <Text style={styles.link}>Sign up</Text>
+        Don’t have an account?{" "}
+        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+          <Text style={styles.link}>SignUp</Text>
+        </TouchableOpacity>
       </Text>
 
       <Text style={styles.altText}>or continue with</Text>
 
       <View style={styles.socialRow}>
-        {["google", "apple", "facebook", "x"].map((item) => (
+        {["google", "apple", "facebook", "twitter"].map((item) => (
           <TouchableOpacity key={item} style={styles.socialButton}>
             <Ionicons name={`logo-${item}`} size={20} color="#000" />
           </TouchableOpacity>
