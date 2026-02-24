@@ -2,7 +2,6 @@
 "use strict";
 
 require("dotenv").config();
-const { Buffer } = require("node:buffer");
 const express = require("express");
 const cors = require("cors");
 
@@ -10,75 +9,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "12mb" }));
 
-const TOKEN_URL = "https://oauth.fatsecret.com/connect/token";
-const API_BASE = "https://platform.fatsecret.com/rest";
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
-
-let cachedToken = null;
-let tokenExpiresAt = 0;
-
-const getAccessToken = async () => {
-  const now = Date.now();
-  if (cachedToken && tokenExpiresAt - 30000 > now) {
-    return cachedToken;
-  }
-
-  const clientId = process.env.FATSECRET_CLIENT_ID;
-  const clientSecret = process.env.FATSECRET_CLIENT_SECRET;
-  if (!clientId || !clientSecret) {
-    throw new Error("Missing FATSECRET_CLIENT_ID or FATSECRET_CLIENT_SECRET.");
-  }
-
-  const auth = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
-  const body = new URLSearchParams();
-  body.set("grant_type", "client_credentials");
-  body.set("scope", "basic");
-
-  const response = await fetch(TOKEN_URL, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${auth}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body,
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      `Token request failed (${response.status}): ${JSON.stringify(data)}`
-    );
-  }
-
-  cachedToken = data.access_token;
-  const expiresIn = Number(data.expires_in) || 3600;
-  tokenExpiresAt = now + Math.max(0, expiresIn - 60) * 1000;
-  return cachedToken;
-};
-
-const fatsecretFetch = async (path, params) => {
-  const token = await getAccessToken();
-  const url = new URL(`${API_BASE}/${path}`);
-  Object.entries(params).forEach(([key, value]) => {
-    if (value !== undefined && value !== null && value !== "") {
-      url.searchParams.set(key, String(value));
-    }
-  });
-  url.searchParams.set("format", "json");
-
-  const response = await fetch(url.toString(), {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    throw new Error(
-      `FatSecret request failed (${response.status}): ${JSON.stringify(data)}`
-    );
-  }
-
-  return data;
-};
 
 const clampNumber = (value, fallback = 0) => {
   const n = Number(value);
@@ -201,45 +132,6 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, service: "metacal-api" });
 });
 
-app.post("/fatsecret/search", async (req, res) => {
-  try {
-    const query = String(req.body?.query ?? "").trim();
-    if (!query) {
-      return res.status(400).json({ error: "Query is required." });
-    }
-    const pageNumber = Math.max(0, Number(req.body?.pageNumber) || 0);
-    const maxResults = Math.min(
-      50,
-      Math.max(1, Number(req.body?.maxResults) || 20)
-    );
-
-    const data = await fatsecretFetch("foods/search/v4", {
-      search_expression: query,
-      page_number: pageNumber,
-      max_results: maxResults,
-    });
-    return res.json(data);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
-
-app.get("/fatsecret/food/:id", async (req, res) => {
-  try {
-    const foodId = req.params.id;
-    if (!foodId) {
-      return res.status(400).json({ error: "foodId is required." });
-    }
-
-    const data = await fatsecretFetch("food/v5", {
-      food_id: foodId,
-    });
-    return res.json(data);
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-});
-
 app.post("/scan/analyze", async (req, res) => {
   try {
     const imageBase64 = String(req.body?.imageBase64 ?? "").trim();
@@ -258,5 +150,5 @@ app.post("/scan/analyze", async (req, res) => {
 
 const port = Number(process.env.PORT) || 4000;
 app.listen(port, () => {
-  console.log(`FatSecret server running on http://localhost:${port}`);
+  console.log(`MetaCal API running on http://localhost:${port}`);
 });
