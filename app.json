@@ -16,7 +16,7 @@
       "package": "com.dave.metacal",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#78b546"
       },
       "edgeToEdgeEnabled": true
     },
@@ -33,7 +33,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#78b546"
         }
       ],
       "expo-font",
