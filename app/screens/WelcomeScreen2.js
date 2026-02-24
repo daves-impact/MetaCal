@@ -1,41 +1,42 @@
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+
+import { Text } from "../components/MetaText";
+// Assets folder is at project root, so use ../../assets from app/screens
+const WELCOME_IMAGE = require("../../assets/welcome2.png");
 
 const WelcomeScreen2 = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top Image */}
       <View style={styles.imageContainer}>
-        <Image
-          //   source={require("../assets/insight-preview.png")} // Replace with actual image
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <View style={styles.imageFrame}>
+          {WELCOME_IMAGE ? (
+            <Image
+              source={WELCOME_IMAGE}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Text style={styles.imagePlaceholderText}>
+                Add welcome image 2
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
 
       {/* Title & Description */}
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Gain Clear Insights Into Your Progress</Text>
+        <Text style={styles.title}>See Your Progress Clearly</Text>
         <Text style={styles.description}>
-          See how your daily efforts stack up with detailed progress reports on
-          calories, nutrition and habits.
+          Understand your daily intake, nutrition balance, and long-term trends
+          with simple, insightful reports.
         </Text>
       </View>
 
       {/* Buttons */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          onPress={() => navigation.navigate("AuthOptions")}
-          style={styles.skipButton}
-        >
-          <Text style={styles.skipText}>Skip</Text>
-        </TouchableOpacity>
         <TouchableOpacity
           onPress={() => navigation.navigate("Welcome3")}
           style={styles.continueButton}
@@ -49,12 +50,10 @@ const WelcomeScreen2 = ({ navigation }) => {
 
 export default WelcomeScreen2;
 
-const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1FAF5",
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 60,
@@ -62,11 +61,32 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     alignItems: "center",
+    justifyContent: "center",
     flex: 1,
   },
+  imageFrame: {
+    width: "82%",
+    maxWidth: 360,
+    aspectRatio: 0.9,
+    borderRadius: 36,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+  },
   image: {
-    width: width * 0.7,
+    width: "100%",
     height: "100%",
+  },
+  imagePlaceholder: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+  },
+  imagePlaceholderText: {
+    color: "#6B7280",
+    fontSize: 13,
+    fontFamily: "Nunito_600SemiBold",
   },
   textContainer: {
     paddingHorizontal: 24,
@@ -74,45 +94,32 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "700",
     textAlign: "center",
     marginBottom: 12,
     color: "#1E1E1E",
+    fontFamily: "Nunito_700Bold",
   },
   description: {
     fontSize: 15,
     textAlign: "center",
     color: "#6B7280",
+    fontFamily: "Nunito_400Regular",
   },
   buttonContainer: {
-    flexDirection: "row",
-    gap: 12,
+    width: "80%",
     marginBottom: 24,
   },
   continueButton: {
-    backgroundColor: "#80CF6C",
+    backgroundColor: "#67bd52",
     paddingHorizontal: 24,
     paddingVertical: 15,
     borderRadius: 30,
-    width: "50%",
+    width: "100%",
     justifyContent: "center",
     alignItems: "center",
-  },
-  skipButton: {
-    backgroundColor: "#E5E7EB",
-    paddingHorizontal: 24,
-    paddingVertical: 15,
-    borderRadius: 30,
-    width: "40%",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  skipText: {
-    color: "#1F2937",
-    fontWeight: "500",
   },
   continueText: {
     color: "#fff",
-    fontWeight: "600",
+    fontFamily: "Nunito_600SemiBold",
   },
 });

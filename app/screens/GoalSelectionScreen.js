@@ -1,54 +1,79 @@
-import { useState } from "react";
-import {
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useContext, useState } from "react";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { UserContext } from "../context/UserContext";
+import { AuthContext } from "../context/AuthContext";
+import { computeTargets } from "../targets";
+import { Text } from "../components/MetaText";
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config/firebase";
 
 const goals = [
-  { id: 1, label: "Lose Weight" },
-  { id: 2, label: "Gain Muscle" },
-  { id: 3, label: "Maintain Weight" },
-  { id: 4, label: "Boost Energy" },
-  { id: 5, label: "Improve Nutrition" },
-  { id: 6, label: "Gain Weight" },
+  { id: 1, key: "lose", label: "Lose Weight", icon: "trending-down-outline" },
+  { id: 2, key: "gain", label: "Gain Muscle", icon: "fitness-outline" },
+  { id: 3, key: "maintain", label: "Maintain Weight", icon: "pulse-outline" },
 ];
 
-export default function GoalSelectionScreen({ navigation }) {
-  const [selectedGoals, setSelectedGoals] = useState([]);
+export default function GoalSelectionScreen({ navigation, route }) {
+  const { user, setUser } = useContext(UserContext);
+  const { authUser } = useContext(AuthContext);
+  const [selectedGoal, setSelectedGoal] = useState(
+    goals.find((goal) => goal.key === user.goal) || null,
+  );
+  const fromSettings = route?.params?.fromSettings;
 
-  const toggleGoal = (id) => {
-    setSelectedGoals((prev) =>
-      prev.includes(id) ? prev.filter((goal) => goal !== id) : [...prev, id]
-    );
+  const selectGoal = (goal) => {
+    setSelectedGoal(goal);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>What's your main goal with Nutrio?</Text>
+      <Text style={styles.title}>What's your main goal?</Text>
 
       <FlatList
         data={goals}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => {
-          const isSelected = selectedGoals.includes(item.id);
+          const isSelected = selectedGoal?.id === item.id;
           return (
             <TouchableOpacity
               style={[styles.goalItem, isSelected && styles.selected]}
-              onPress={() => toggleGoal(item.id)}
+              onPress={() => selectGoal(item)}
             >
               <Text style={styles.goalText}>{item.label}</Text>
-              {isSelected && <Text style={styles.checkmark}>✓</Text>}
+              <View style={styles.rightSide}>
+                <View style={styles.iconWrap}>
+                  <Ionicons name={item.icon} size={20} color="#67bd52" />
+                </View>
+                {isSelected && (
+                  <Ionicons name="checkmark-circle" size={18} color="#4CAF50" />
+                )}
+              </View>
             </TouchableOpacity>
           );
         }}
       />
 
       <TouchableOpacity
-        style={styles.continueBtn}
-        onPress={() => navigation.navigate("Personalization")}
+        style={[styles.continueBtn, !selectedGoal && styles.disabled]}
+        onPress={() => {
+          const nextUser = { ...user, goal: selectedGoal?.key || "" };
+          const targets = computeTargets(nextUser);
+          setUser({ ...nextUser, targets });
+          if (authUser?.uid) {
+            setDoc(
+              doc(db, "users", authUser.uid),
+              { goal: selectedGoal?.key || "", targets },
+              { merge: true },
+            );
+          }
+          if (fromSettings) {
+            navigation.goBack();
+            return;
+          }
+          navigation.navigate("ActivityLevel");
+        }}
+        disabled={!selectedGoal}
       >
         <Text style={styles.btnText}>Continue</Text>
       </TouchableOpacity>
@@ -67,21 +92,37 @@ const styles = StyleSheet.create({
   goalItem: {
     flexDirection: "row",
     justifyContent: "space-between",
+    alignItems: "center",
     padding: 15,
     borderWidth: 1,
     borderRadius: 8,
     marginBottom: 10,
     borderColor: "#ccc",
   },
+  rightSide: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  iconWrap: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "#E9F7ED",
+    alignItems: "center",
+    justifyContent: "center",
+  },
   selected: { backgroundColor: "#e6f8e6", borderColor: "#4CAF50" },
   goalText: { fontSize: 16 },
-  checkmark: { fontSize: 18, color: "green" },
   continueBtn: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: "#8BC34A",
+    backgroundColor: "#67bd52",
     borderRadius: 8,
     alignItems: "center",
+  },
+  disabled: {
+    backgroundColor: "#C7E9BF",
   },
   btnText: { color: "white", fontWeight: "600", fontSize: 16 },
 });

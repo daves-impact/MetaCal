@@ -1,21 +1,22 @@
+import { Ionicons } from "@expo/vector-icons";
 import { useContext, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
 
+import { Text, TextInput } from "../components/MetaText";
 const NameScreen = ({ navigation }) => {
   const [name, setName] = useState("");
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
+  const { updateUserProfile } = useContext(AuthContext);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>What's your name?</Text>
+      <View style={styles.iconBadge}>
+        <Ionicons name="person-circle-outline" size={32} color="#67bd52" />
+      </View>
+      <Text style={styles.title}>What&apos;s your name?</Text>
       <TextInput
         style={styles.input}
         placeholder="Enter your name"
@@ -24,11 +25,17 @@ const NameScreen = ({ navigation }) => {
       />
       <TouchableOpacity
         style={[styles.button, !name && { backgroundColor: "#ccc" }]}
-        onPress={() => {
-          setUser({ ...user, name });
+        onPress={async () => {
+          const trimmed = name.trim();
+          setUser((prev) => ({ ...prev, name: trimmed }));
+          try {
+            await updateUserProfile({ displayName: trimmed });
+          } catch {
+            // Allow flow to continue even if profile update fails.
+          }
           navigation.navigate("Gender");
         }}
-        disabled={!name}
+        disabled={!name.trim()}
       >
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
@@ -51,6 +58,16 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: "center",
   },
+  iconBadge: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: "#E9F7ED",
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 12,
+    alignSelf: "center",
+  },
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
@@ -60,11 +77,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   button: {
-    backgroundColor: "#80CF6C",
+    backgroundColor: "#67bd52",
     padding: 15,
-    borderRadius: 8,
-    alignItems: "center",
     borderRadius: 30,
+    alignItems: "center",
   },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });

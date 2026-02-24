@@ -1,30 +1,37 @@
-import {
-  Dimensions,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+
+import { Text } from "../components/MetaText";
+// Assets folder is at project root, so use ../../assets from app/screens
+const WELCOME_IMAGE = require("../../assets/welcome3.png");
 
 const WelcomeScreen3 = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top Image */}
       <View style={styles.imageContainer}>
-        <Image
-          //   source={require("../assets/articles-preview.png")} // Replace with your actual image
-          style={styles.image}
-          resizeMode="contain"
-        />
+        <View style={styles.imageFrame}>
+          {WELCOME_IMAGE ? (
+            <Image
+              source={WELCOME_IMAGE}
+              style={styles.image}
+              resizeMode="cover"
+            />
+          ) : (
+            <View style={styles.imagePlaceholder}>
+              <Text style={styles.imagePlaceholderText}>
+                Add welcome image 3
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
 
       {/* Title & Description */}
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Empower Your Health with Expert Advice</Text>
+        <Text style={styles.title}>Build Healthier Habits</Text>
         <Text style={styles.description}>
-          Access a world of knowledge, nutrition and wellness tailored to your
-          needs. Written by trusted professionals.
+          Get personalized insights and practical guidance designed to help you
+          reach your goals faster.
         </Text>
       </View>
 
@@ -33,7 +40,7 @@ const WelcomeScreen3 = ({ navigation }) => {
         onPress={() => navigation.navigate("AuthOptions")}
         style={styles.getStartedButton}
       >
-        <Text style={styles.getStartedText}>Let’s Get Started</Text>
+        <Text style={styles.getStartedText}>Let&apos;s Get Started</Text>
       </TouchableOpacity>
     </View>
   );
@@ -41,12 +48,10 @@ const WelcomeScreen3 = ({ navigation }) => {
 
 export default WelcomeScreen3;
 
-const { width } = Dimensions.get("window");
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1FAF5",
+    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 60,
@@ -54,11 +59,32 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: "100%",
     alignItems: "center",
+    justifyContent: "center",
     flex: 1,
   },
+  imageFrame: {
+    width: "82%",
+    maxWidth: 360,
+    aspectRatio: 0.9,
+    borderRadius: 36,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+  },
   image: {
-    width: width * 0.7,
+    width: "100%",
     height: "100%",
+  },
+  imagePlaceholder: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 1,
+    borderColor: "#D1D5DB",
+  },
+  imagePlaceholderText: {
+    color: "#6B7280",
+    fontSize: 13,
+    fontFamily: "Nunito_600SemiBold",
   },
   textContainer: {
     paddingHorizontal: 24,
@@ -66,18 +92,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
-    fontWeight: "700",
     textAlign: "center",
     marginBottom: 12,
     color: "#1E1E1E",
+    fontFamily: "Nunito_700Bold",
   },
   description: {
     fontSize: 15,
     textAlign: "center",
     color: "#6B7280",
+    fontFamily: "Nunito_400Regular",
   },
   getStartedButton: {
-    backgroundColor: "#80CF6C",
+    backgroundColor: "#67bd52",
     paddingHorizontal: 32,
     paddingVertical: 15,
     borderRadius: 30,
@@ -88,7 +115,7 @@ const styles = StyleSheet.create({
   },
   getStartedText: {
     color: "#fff",
-    fontWeight: "600",
     fontSize: 16,
+    fontFamily: "Nunito_600SemiBold",
   },
 });

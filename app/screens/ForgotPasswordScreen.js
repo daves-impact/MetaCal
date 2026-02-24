@@ -1,19 +1,30 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { useContext, useState } from "react";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { AuthContext } from "../context/AuthContext";
+import { useAppAlert } from "../context/AlertContext";
 
+import { Text, TextInput } from "../components/MetaText";
 export default function ForgotPasswordScreen({ navigation }) {
   const [email, setEmail] = useState("");
+  const { resetPassword, getFriendlyAuthError } = useContext(AuthContext);
+  const { showAlert } = useAppAlert();
 
-  const handleSendOTP = () => {
-    // Simulate sending OTP
-    navigation.navigate("OTPScreen");
+  const handleSendReset = async () => {
+    if (!email) {
+      showAlert("Missing email", "Enter your registered email address.");
+      return;
+    }
+    try {
+      await resetPassword(email.trim());
+      showAlert(
+        "Reset email sent",
+        "Check your inbox and follow the link to reset your password.",
+      );
+      navigation.navigate("Login");
+    } catch (error) {
+      showAlert("Reset failed", getFriendlyAuthError(error));
+    }
   };
 
   return (
@@ -38,8 +49,8 @@ export default function ForgotPasswordScreen({ navigation }) {
         autoCapitalize="none"
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSendOTP}>
-        <Text style={styles.buttonText}>Send OTP Code</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSendReset}>
+        <Text style={styles.buttonText}>Send reset email</Text>
       </TouchableOpacity>
     </View>
   );
@@ -81,3 +92,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+

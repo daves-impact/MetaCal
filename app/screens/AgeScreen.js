@@ -1,16 +1,12 @@
 import { useContext, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { UserContext } from "../context/UserContext";
 
-export default function AgeScreen({ navigation }) {
+import { Text, TextInput } from "../components/MetaText";
+export default function AgeScreen({ navigation, route }) {
   const { user, setUser } = useContext(UserContext);
   const [age, setAge] = useState(user.age || ""); // store as string for TextInput
+  const fromSettings = route?.params?.fromSettings;
 
   return (
     <View style={styles.container}>
@@ -28,6 +24,10 @@ export default function AgeScreen({ navigation }) {
         style={[styles.button, !age && { backgroundColor: "#ccc" }]}
         onPress={() => {
           setUser({ ...user, age: parseInt(age) }); // save to context
+          if (fromSettings) {
+            navigation.goBack();
+            return;
+          }
           navigation.navigate("Height"); // go to next step
         }}
         disabled={!age}
@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#4A90E2",
+    backgroundColor: "#67bd52",
     padding: 15,
     borderRadius: 8,
     width: "100%",
@@ -70,3 +70,6 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "600" },
 });
+
+
+

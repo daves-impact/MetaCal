@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { Text, TextInput } from "../components/MetaText";
 const PasswordChangedScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   button: {
-    backgroundColor: "#7AC74F",
+    backgroundColor: "#67bd52",
     paddingVertical: 14,
     paddingHorizontal: 60,
     borderRadius: 30,
@@ -74,3 +75,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+
+

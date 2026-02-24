@@ -1,6 +1,48 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import * as Google from "expo-auth-session/providers/google";
+import * as WebBrowser from "expo-web-browser";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { useEffect } from "react";
+import { Image, StyleSheet, TouchableOpacity, View } from "react-native";
+import { auth } from "../config/firebase";
+import {
+  googleAuthRequestConfig,
+  googlePromptOptions,
+  isGoogleProxyReady,
+} from "../config/googleAuth";
+import { useAppAlert } from "../context/AlertContext";
 
+import { Text } from "../components/MetaText";
+
+WebBrowser.maybeCompleteAuthSession();
 const AuthOptionsScreen = ({ navigation }) => {
+  const { showAlert } = useAppAlert();
+  const [request, response, promptAsync] = Google.useAuthRequest(
+    googleAuthRequestConfig,
+  );
+
+  useEffect(() => {
+    if (response?.type === "success") {
+      const { authentication } = response;
+      if (!authentication?.idToken) return;
+      const credential = GoogleAuthProvider.credential(authentication.idToken);
+      signInWithCredential(auth, credential).catch(() => {
+        showAlert("Google sign-in failed", "Please try again.");
+      });
+    }
+  }, [response, showAlert]);
+
+  const handleGooglePress = () => {
+    if (!isGoogleProxyReady) {
+      showAlert(
+        "Google sign-in setup needed",
+        "Add your Expo owner in app.json, then add https://auth.expo.io/@<owner>/<slug> to Google OAuth redirect URIs.",
+      );
+      return;
+    }
+    promptAsync(googlePromptOptions);
+  };
+
   return (
     <View style={styles.container}>
       {/* App Logo or Icon */}
@@ -17,11 +59,14 @@ const AuthOptionsScreen = ({ navigation }) => {
       </Text>
 
       {/* Google Auth */}
-      <TouchableOpacity style={styles.googleButton}>
-        <Image
-          //   source={require("../assets/google-icon.png")} // Add a small Google icon
-          style={styles.googleIcon}
-        />
+      <TouchableOpacity
+        style={styles.googleButton}
+        onPress={handleGooglePress}
+        disabled={!request}
+      >
+        <View style={styles.googleIcon}>
+          <Ionicons name="logo-google" size={18} color="#111827" />
+        </View>
         <Text style={styles.googleText}>Continue with Google</Text>
       </TouchableOpacity>
 
@@ -53,7 +98,7 @@ export default AuthOptionsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F1FAF5",
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 24,
@@ -88,9 +133,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   googleIcon: {
-    width: 20,
-    height: 20,
+    width: 24,
+    height: 24,
     marginRight: 12,
+    alignItems: "center",
+    justifyContent: "center",
   },
   googleText: {
     fontSize: 15,
@@ -107,7 +154,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   signUpButton: {
-    backgroundColor: "#80CF6C",
+    backgroundColor: "#67bd52",
     paddingVertical: 14,
     borderRadius: 30,
     alignItems: "center",

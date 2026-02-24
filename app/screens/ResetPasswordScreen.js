@@ -1,13 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 
+import { Text, TextInput } from "../components/MetaText";
 export default function ResetPasswordScreen({ navigation }) {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -87,3 +82,5 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
+
+
