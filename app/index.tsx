@@ -9,7 +9,9 @@ import {
   Nunito_800ExtraBold,
   useFonts,
 } from "@expo-google-fonts/nunito";
+import { NavigationContainer } from "@react-navigation/native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { AuthContext, AuthProvider } from "./context/AuthContext";
 import { AuthFlowProvider } from "./context/AuthFlowContext";
 import { AlertProvider } from "./context/AlertContext";
@@ -194,20 +196,26 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <AuthProvider>
-        <AuthFlowProvider>
-          <MealsProvider>
-            <UserProvider>
-              <AlertProvider>
-                <RootNavigator
-                  finishedOnboarding={finishedOnboarding}
-                  setFinishedOnboarding={setFinishedOnboarding}
-                />
-              </AlertProvider>
-            </UserProvider>
-          </MealsProvider>
-        </AuthFlowProvider>
-      </AuthProvider>
+      <SafeAreaProvider>
+        <SafeAreaView style={{ flex: 1 }} edges={["top"]}>
+          <NavigationContainer>
+            <AuthProvider>
+              <AuthFlowProvider>
+                <MealsProvider>
+                  <UserProvider>
+                    <AlertProvider>
+                      <RootNavigator
+                        finishedOnboarding={finishedOnboarding}
+                        setFinishedOnboarding={setFinishedOnboarding}
+                      />
+                    </AlertProvider>
+                  </UserProvider>
+                </MealsProvider>
+              </AuthFlowProvider>
+            </AuthProvider>
+          </NavigationContainer>
+        </SafeAreaView>
+      </SafeAreaProvider>
     </GestureHandlerRootView>
   );
 }

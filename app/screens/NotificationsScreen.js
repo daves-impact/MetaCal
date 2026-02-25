@@ -3,6 +3,7 @@ import * as Notifications from "expo-notifications";
 import React, { useContext, useMemo, useState } from "react";
 import { Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import Constants from "expo-constants";
 import { doc, setDoc } from "firebase/firestore";
 import { AuthContext } from "../context/AuthContext";
 import { UserContext } from "../context/UserContext";
@@ -11,13 +12,17 @@ import { COLORS } from "../theme/colors";
 import { useAppAlert } from "../context/AlertContext";
 import { Text } from "../components/MetaText";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: false,
-  }),
-});
+const isExpoGo = Constants.appOwnership === "expo";
+
+if (!isExpoGo) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+  });
+}
 
 const FREQUENCY_OPTIONS = [
   { id: 1, label: "Once daily" },
@@ -79,6 +84,9 @@ export default function NotificationsScreen({ navigation }) {
 
   const scheduleNotifications = async () => {
     try {
+      if (isExpoGo) {
+        return { ok: false, reason: "expo-go" };
+      }
       await Notifications.cancelAllScheduledNotificationsAsync();
       if (!enabled) return { ok: true };
 
@@ -129,6 +137,13 @@ export default function NotificationsScreen({ navigation }) {
       }
       const result = await scheduleNotifications();
       if (!result.ok && enabled) {
+        if (result.reason === "expo-go") {
+          showAlert(
+            "Saved",
+            "Preferences saved. Reminder notifications need a development build or APK (not Expo Go).",
+          );
+          return;
+        }
         if (result.reason === "permission") {
           showAlert(
             "Saved",
@@ -154,7 +169,7 @@ export default function NotificationsScreen({ navigation }) {
   const handleToggle = async () => {
     const next = !enabled;
     setEnabled(next);
-    if (!next) {
+    if (!next && !isExpoGo) {
       await Notifications.cancelAllScheduledNotificationsAsync();
     }
   };

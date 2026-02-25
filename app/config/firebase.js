@@ -1,5 +1,10 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  getAuth,
+  getReactNativePersistence,
+  initializeAuth,
+} from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Firebase web config (used by Expo/React Native Firebase JS SDK)
@@ -25,6 +30,16 @@ export const googleIosClientId = googleWebClientId;
 
 const app = initializeApp(firebaseConfig);
 
-export const auth = getAuth(app);
+let auth;
+try {
+  auth = initializeAuth(app, {
+    persistence: getReactNativePersistence(AsyncStorage),
+  });
+} catch {
+  // Fallback if Auth was already initialized (hot reload or duplicate init path).
+  auth = getAuth(app);
+}
+
+export { auth };
 export const db = getFirestore(app);
 export { firebaseConfig };
