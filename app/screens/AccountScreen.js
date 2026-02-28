@@ -7,6 +7,7 @@ import {
   View,
 } from "react-native";
 import { UserContext } from "../context/UserContext";
+import { AuthContext } from "../context/AuthContext";
 import { COLORS } from "../theme/colors";
 import { auth, db } from "../config/firebase";
 import { deleteUser } from "firebase/auth";
@@ -44,6 +45,7 @@ const SETTINGS_ITEMS = [
 export default function AccountScreen({ navigation }) {
   const [isDark, setIsDark] = useState(false);
   const { user } = useContext(UserContext);
+  const { signOut } = useContext(AuthContext);
   const { showAlert } = useAppAlert();
 
   return (
@@ -126,6 +128,31 @@ export default function AccountScreen({ navigation }) {
       </View>
 
       <View style={styles.spacer} />
+
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() => {
+          showAlert("Log out", "Are you sure you want to log out?", [
+            { text: "Cancel", style: "cancel" },
+            {
+              text: "Log out",
+              style: "destructive",
+              onPress: async () => {
+                try {
+                  await signOut();
+                } catch (error) {
+                  showAlert(
+                    "Logout failed",
+                    error?.message || "Please try again.",
+                  );
+                }
+              },
+            },
+          ]);
+        }}
+      >
+        <Text style={styles.logoutText}>Log out</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.deleteButton}
@@ -295,11 +322,24 @@ const styles = StyleSheet.create({
     backgroundColor: "#111827",
   },
   deleteButton: {
-    marginTop: 0,
+    marginTop: 10,
     backgroundColor: "#111827",
     borderRadius: 14,
     paddingVertical: 14,
     alignItems: "center",
+  },
+  logoutButton: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 14,
+    paddingVertical: 14,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+  logoutText: {
+    color: "#111827",
+    fontWeight: "700",
+    fontSize: 15,
   },
   deleteText: {
     color: "#FFFFFF",

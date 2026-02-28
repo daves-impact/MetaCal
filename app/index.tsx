@@ -62,27 +62,24 @@ function RootNavigator({
   finishedOnboarding,
   setFinishedOnboarding,
 }: {
-  finishedOnboarding: boolean;
-  setFinishedOnboarding: React.Dispatch<React.SetStateAction<boolean>>;
+  finishedOnboarding: boolean | null;
+  setFinishedOnboarding: React.Dispatch<React.SetStateAction<boolean | null>>;
 }) {
   const { authUser, authLoading } = useContext(AuthContext);
   const { setUser, initialUser } = useContext(UserContext);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [gateDone, setGateDone] = useState(false);
 
   useEffect(() => {
     const loadProfile = async () => {
       setProfileLoading(true);
       if (!authUser) {
         setFinishedOnboarding(false);
-        setGateDone(false);
         setUser(initialUser);
         setProfileLoading(false);
         return;
       }
       const gate = await SecureStore.getItemAsync("metacal_onboarding_gate");
       const gateValue = gate === "done";
-      setGateDone(gateValue);
       if (!authUser.emailVerified) {
         setFinishedOnboarding(false);
         setProfileLoading(false);
@@ -96,7 +93,6 @@ function RootNavigator({
         if (gateValue && isComplete) {
           // Onboarding already completed; clear gate to avoid looping.
           await SecureStore.deleteItemAsync("metacal_onboarding_gate");
-          setGateDone(false);
           setFinishedOnboarding(true);
         } else {
           setFinishedOnboarding(isComplete);
@@ -109,7 +105,7 @@ function RootNavigator({
     loadProfile();
   }, [authUser, setUser, setFinishedOnboarding, initialUser]);
 
-  if (authLoading || profileLoading) return null;
+  if (authLoading || profileLoading || finishedOnboarding == null) return null;
 
   const isVerified = Boolean(authUser?.emailVerified);
   const showOnboarding = !authUser || !isVerified;
@@ -117,11 +113,9 @@ function RootNavigator({
     ? "Welcome1"
     : !isVerified
       ? "Login"
-      : !finishedOnboarding
-        ? gateDone
-          ? "Name"
-          : "Login"
-        : "MainTabs";
+      : finishedOnboarding
+        ? "MainTabs"
+        : "Name";
 
   return (
     <Stack.Navigator
@@ -182,7 +176,9 @@ function RootNavigator({
 }
 
 export default function App() {
-  const [finishedOnboarding, setFinishedOnboarding] = useState(false);
+  const [finishedOnboarding, setFinishedOnboarding] = useState<boolean | null>(
+    null,
+  );
   const [fontsLoaded] = useFonts({
     Nunito_400Regular,
     Nunito_600SemiBold,

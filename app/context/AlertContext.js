@@ -72,6 +72,7 @@ export const AlertProvider = ({ children }) => {
                     <Text
                       style={[
                         styles.actionText,
+                        isCancel && styles.actionTextGhost,
                         isDestructive && styles.actionTextDestructive,
                       ]}
                     >
@@ -140,6 +141,9 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
     fontWeight: "700",
     fontSize: 14,
+  },
+  actionTextGhost: {
+    color: COLORS.text,
   },
   actionTextDestructive: {
     color: "#DC2626",
