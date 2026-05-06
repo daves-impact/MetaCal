@@ -16,7 +16,7 @@ The app combines manual food logging with AI-assisted image recognition powered 
 
 Screenshots
 
-Screenshots from development build. APK release in progress.
+Screenshots from development build. APK build in progress.
 
 OnboardingHome DashboardFood LogAI ScanShow ImageShow ImageShow ImageShow Image
 
