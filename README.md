@@ -1,50 +1,67 @@
-# Welcome to your Expo app 👋
+<div align="center">
+  <h1>MetaCal 🔥</h1>
+  <p><strong>Smart nutrition tracking built for African users.</strong></p>
+  <p>Log meals, scan food with AI, and hit your calorie goals — with a database that actually knows what Jollof Rice and Eba are.</p>
+Show Image
+Show Image
+Show Image
+Show Image
+Show Image
+</div>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Overview
+Most calorie tracking apps are built for Western diets. MetaCal is built for everyone else.
+It includes a local African food database covering staples like Eba, Fufu, Pounded Yam, Amala, Jollof Rice, and more — making calorie tracking accurate and actually usable for Nigerian and African users.
+The app combines manual food logging with AI-assisted image recognition powered by the OpenAI API. Point your camera at a meal and MetaCal detects the foods, estimates portions, and logs the macros automatically.
 
-## Get started
+Screenshots
 
-1. Install dependencies
+Screenshots from development build. APK release in progress.
 
-   ```bash
-   npm install
-   ```
+OnboardingHome DashboardFood LogAI ScanShow ImageShow ImageShow ImageShow Image
 
-2. Start the app
+Features
 
-   ```bash
-   npx expo start
-   ```
+AI Food Detection — Snap a photo of your meal and the app identifies foods, estimates portions, and calculates macros using the OpenAI API
+African Food Database — Built-in database of popular Nigerian and African foods with calorie and macro data
+Personalized Calorie Targets — Calculates daily calorie requirements based on your goal (lose weight, gain muscle, maintain)
+Macro Tracking — Tracks protein, carbs, and fats against daily targets
+Weekly & Monthly Insights — Visual charts showing calorie intake and nutrition breakdown over time
+Manual Food Logging — Search and log any food by name with quantity control
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Tech Stack
+LayerTechnologyMobile FrameworkReact Native + ExpoLanguageJavaScriptBackend / AuthFirebase (Firestore + Auth)AI IntegrationOpenAI API (food detection)ChartsReact Native chart library
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Getting Started
+Prerequisites
 
-## Get a fresh project
+Node.js 18+
+Expo CLI (npm install -g expo-cli)
+Expo Go app on your phone (iOS or Android)
+Firebase project with Firestore and Auth enabled
+OpenAI API key
 
-When you're ready, run:
+Installation
+bash# Clone the repo
+git clone https://github.com/daves-impact/MetaCal.git
+cd MetaCal
 
-```bash
-npm run reset-project
-```
+# Install dependencies
+npm install
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Set up environment variables
+cp .env.example .env
+# Add your Firebase config and OpenAI API key to .env
 
-## Learn more
+# Start the dev server
+npx expo start
+Scan the QR code with Expo Go on your phone to run the app.
 
-To learn more about developing your project with Expo, look at the following resources:
+Project Status
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+In active development. The app runs fully on Expo Go. APK build is currently in progress.
 
-## Join the community
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Author
+Built by Dave — frontend developer and product builder.
